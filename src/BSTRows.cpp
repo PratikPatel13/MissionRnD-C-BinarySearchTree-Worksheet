@@ -22,7 +22,9 @@ Note : Return -1 for Invalid Cases .
 
 #include <stdlib.h>
 #include <stdio.h>
-
+void enqueue(struct node* data);
+struct node* dequeue();
+int isEmpty();
 struct node{
 	struct node * left;
 	int data;
@@ -33,5 +35,72 @@ struct node{
 
 int* BSTRighttoLeftRows(struct node* root)
 {
-    return NULL;
+	if (root == NULL)
+		return NULL;
+	int *arr = (int *)malloc(sizeof(int)*20), i = 0;
+	struct node *current;
+	enqueue(root);
+	while (!isEmpty())
+	{
+		current = dequeue();
+		arr[i++] = current->data;
+		if (current->right)
+		{
+			enqueue(current->right);
+		}
+		if (current->left)
+			enqueue(current->left);
+	}
+	return arr;
+}
+
+struct Qnode {
+	struct node *data;
+	struct Qnode *next;
+}*front = NULL,*rear = NULL;
+
+void enqueue(struct node* data)
+{
+	struct Qnode *newNode = NULL;
+	if (front == NULL)
+	{
+
+		newNode = (struct Qnode*)malloc(sizeof(struct Qnode));
+		newNode->data = data;
+		newNode->next = NULL;
+		front = newNode;
+		rear = newNode;
+	}
+	else
+	{
+		newNode = (struct Qnode*)malloc(sizeof(struct Qnode));
+		newNode->data = data;
+		newNode->next = NULL;
+		rear->next = newNode;
+		rear = rear->next;
+	}
+}
+
+struct node* dequeue()
+{
+	struct Qnode *temp;
+	if (front == NULL)
+		return NULL;
+	if (front == rear)
+	{
+		temp = front;
+		front = rear = NULL;
+		return temp->data;
+	}
+	temp = front;
+	front = front->next;
+	return temp->data;
+
+}
+int isEmpty()
+{
+	if (front == NULL)
+		return 1;
+	else
+		return 0;
 }
